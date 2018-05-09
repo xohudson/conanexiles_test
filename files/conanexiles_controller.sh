@@ -1,5 +1,6 @@
 #!/bin/bash
 APPID=443030
+PB_TOKEN=
 
 function get_available_build() {
     # clear appcache (to avoid reading infos from cache)
@@ -110,6 +111,13 @@ while true; do
 
     if [[ $ab != $ib ]];then
         echo "Info: New build available. Updating $ib -> $ab"
+        
+        curl -s --header "Access-Token: $PB_TOKEN" \
+        --header 'Content-Type: application/json' \
+        --data-binary "{\"body\":\"Info: New build available. Updating $ib -> $ab\",\"title\":\"[WF] Conan Warning\",\"type\":\"note\"}" \
+        --request POST \
+        https://api.pushbullet.com/v2/pushes
+        
         do_update
     fi
 
